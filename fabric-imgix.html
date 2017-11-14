@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="fabric-imgix">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+
+  <script>
+    /**
+     * `fabric-imgix`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class FabricImgix extends Polymer.Element {
+      static get is() {
+        return 'fabric-imgix';
+      }
+
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'fabric-imgix'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(FabricImgix.is, FabricImgix);
+  </script>
+</dom-module>
