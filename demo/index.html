@@ -14,6 +14,10 @@
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
+      fabric-imgix {
+        height: 20rem;
+        width: 100%;
+      }
     </style>
   </custom-style>
 </head>
@@ -22,7 +26,7 @@
   <h3>Basic fabric-imgix demo</h3>
   <demo-snippet>
     <template>
-      <fabric-imgix></fabric-imgix>
+      <fabric-imgix fit="crop" src="https://p.imgix.net/activity/swimming.jpg"></fabric-imgix>
     </template>
   </demo-snippet>
 </div>
