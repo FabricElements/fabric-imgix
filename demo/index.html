@@ -14,6 +14,15 @@
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
+      fabric-imgix {
+        height: 20rem;
+        width: 100%;
+      }
+
+      input {
+        width: 100%;
+        margin-top: 20px;
+      }
     </style>
   </custom-style>
 </head>
@@ -22,9 +31,82 @@
   <h3>Basic fabric-imgix demo</h3>
   <demo-snippet>
     <template>
-      <fabric-imgix></fabric-imgix>
+      <fabric-imgix
+        fit="crop"
+        id="imgix-1"
+        src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+        ></fabric-imgix>
+      </template>
+    </demo-snippet>
+
+  <h3>Adjust hue demo</h3>
+  <demo-snippet>
+    <template>
+      <dom-bind id="demoHue">
+        <template>
+          <fabric-imgix
+            fit="crop"
+            id="imgix-2"
+            src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+          ></fabric-imgix>
+          <input
+            id="hvalue" 
+            type="range" 
+            onchange="demoHueChange()" 
+            min="0" 
+            max="360" />
+        </template>
+      </dom-bind>
     </template>
   </demo-snippet>
+
+  <h3>Face detection demo</h3>
+  <p>Choose a face on which to center the image</p>
+  <demo-snippet>
+    <template>
+      <dom-bind id="demoFace">
+        <template>
+          <fabric-imgix
+            fit="facearea"
+            facepad="2"
+            id="imgix-3"
+            src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+          ></fabric-imgix>
+          <input 
+            type="range" 
+            onchange="demoFaceChange()" 
+            min="1" 
+            max="2"
+            id="faceindex" />
+        </template>
+      </dom-bind>
+    </template>
+  </demo-snippet>
+
+    <script>
+      /* eslint-disable no-unused-vars, no-undef*/
+
+      const fabricImgixOne = document.querySelector('#imgix-2');
+      const fabricImgixTwo = document.querySelector('#imgix-3');
+
+      /**
+       * On demoHue input change
+       *
+       * @private
+       */
+      function demoHueChange() {
+        fabricImgixOne.hue = Number(demoHue.$.hvalue.value);
+      }
+
+      /**
+       * On demoFace input change
+       *
+       * @private
+       */
+       function demoFaceChange() {
+        fabricImgixTwo.faceindex = Number(demoFace.$.faceindex.value);
+      }
+    </script>
 </div>
 </body>
 </html>

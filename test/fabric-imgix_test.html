@@ -19,34 +19,7 @@
   </template>
 </test-fixture>
 
-<test-fixture id="ChangedPropertyTestFixture">
-  <template>
-    <fabric-imgix prop1="new-prop1"></fabric-imgix>
-  </template>
-</test-fixture>
-
-<script>
-  suite('fabric-imgix', () => {
-
-    test('instantiating the element with default properties works', () => {
-      const element = fixture('BasicTestFixture');
-      assert.equal(element.prop1, 'fabric-imgix');
-      const elementShadowRoot = element.shadowRoot;
-      const elementHeader = elementShadowRoot.querySelector('h2');
-      assert.equal(elementHeader.innerHTML, 'Hello fabric-imgix!');
-    });
-
-    test('setting a property on the element works', () => {
-      // Create a test fixture
-      const element = fixture('ChangedPropertyTestFixture');
-      assert.equal(element.prop1, 'new-prop1');
-      const elementShadowRoot = element.shadowRoot;
-      const elementHeader = elementShadowRoot.querySelector('h2');
-      assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
-    });
-
-  });
-</script>
+<script></script>
 
 </body>
 </html>
