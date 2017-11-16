@@ -1,21 +1,41 @@
-# \<fabric-imgix\>
+## \<fabric-imgix\>
 
+`fabric-imgix` is a web component that process images in real time using [imgIX](https://www.imgix.com/) service.
 
+## Installation
 
-## Install the Polymer-CLI
+Install fabric-imgix with Bower
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
-
-```
-$ polymer serve
+```shell
+$ bower install --save FabricElements/fabric-imgix
 ```
 
-## Running Tests
+## Usage
 
-```
-$ polymer test
+Import it into the `<head>` of your page
+
+```html
+<link rel="import" href="bower_components/fabric-imgix/fabric-imgix.html">
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+### Example: basic usage
+
+```html
+<fabric-imgix src="img.jpg"></fabric-imgix>
+```
+
+* `src` (string) - The URL of an image.
+
+This element also receives all the properties that match with the imgIX parameters. 
+> See [imgIX API reference](https://docs.imgix.com/apis/url) for all the options.
+
+> See [demo file](./demo/index.html) for examples.
+
+## Contributing
+
+Please check [CONTRIBUTING](./CONTRIBUTING.md).
+
+## License
+
+Released under the [BSD 3-Clause License](./LICENSE.md).
+

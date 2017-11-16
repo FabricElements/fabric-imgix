@@ -155,6 +155,7 @@
        * @return {object}
        */
       static get properties() {
+        // Create properties for every Imgix parameter
         const imgixProps = imgixParameters.reduce((acc, prop) => {
           acc[prop] = {
             type: String,
