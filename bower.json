@@ -3,9 +3,7 @@
   "main": "fabric-imgix.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "iron-image": "PolymerElements/iron-image#^2.1.2",
-    "bower": "*",
-    "install": "^1.0.4",
+    "iron-image": "PolymerElements/iron-image#^2.1.2"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
