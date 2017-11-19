@@ -7,106 +7,88 @@
   <title>fabric-imgix demo</title>
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../polymer/lib/elements/custom-style.html">
+  <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
+  <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+  <link rel="import" href="../../paper-input/paper-input.html">
+  <link rel="import" href="../../paper-radio-button/paper-radio-button.html">
+  <link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+  <link rel="import" href="../../paper-slider/paper-slider.html">
   <link rel="import" href="../fabric-imgix.html">
 
   <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      fabric-imgix {
-        height: 20rem;
-        width: 100%;
+    <style is="custom-style">
+      body {
+        margin: 0;
+        background-color: #f1f1f1;
       }
 
-      input {
+      fabric-imgix {
+        height: 500px;
+        max-width: 700px;
         width: 100%;
-        margin-top: 20px;
+        margin: 0 auto;
+        background-color: grey;
       }
     </style>
   </custom-style>
 </head>
 <body>
-<div class="vertical-section-container centered">
-  <h3>Basic fabric-imgix demo</h3>
-  <demo-snippet>
-    <template>
-      <fabric-imgix
-        fit="crop"
-        id="imgix-1"
-        src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
-        ></fabric-imgix>
-      </template>
-    </demo-snippet>
+<dom-bind>
+  <template>
+    <h4>Path: [[path]]</h4>
+    <hr>
+    <paper-toggle-button checked="{{smart}}">Smart</paper-toggle-button>
+    <!--<paper-checkbox checked="{{smart}}">Smart</paper-checkbox>-->
+    <!--<paper-input always-float-label label="Sizing" value="{{sizing}}"></paper-input>-->
 
-  <h3>Adjust hue demo</h3>
-  <demo-snippet>
-    <template>
-      <dom-bind id="demoHue">
-        <template>
-          <fabric-imgix
-            fit="crop"
-            id="imgix-2"
-            src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
-          ></fabric-imgix>
-          <input
-            id="hvalue" 
-            type="range" 
-            onchange="demoHueChange()" 
-            min="0" 
-            max="360" />
-        </template>
-      </dom-bind>
-    </template>
-  </demo-snippet>
-
-  <h3>Face detection demo</h3>
-  <p>Choose a face on which to center the image</p>
-  <demo-snippet>
-    <template>
-      <dom-bind id="demoFace">
-        <template>
-          <fabric-imgix
-            fit="facearea"
-            facepad="2"
-            id="imgix-3"
-            src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
-          ></fabric-imgix>
-          <input 
-            type="range" 
-            onchange="demoFaceChange()" 
-            min="1" 
-            max="2"
-            id="faceindex" />
-        </template>
-      </dom-bind>
-    </template>
-  </demo-snippet>
-
-    <script>
-      /* eslint-disable no-unused-vars, no-undef*/
-
-      const fabricImgixOne = document.querySelector('#imgix-2');
-      const fabricImgixTwo = document.querySelector('#imgix-3');
-
-      /**
-       * On demoHue input change
-       *
-       * @private
-       */
-      function demoHueChange() {
-        fabricImgixOne.hue = Number(demoHue.$.hvalue.value);
-      }
-
-      /**
-       * On demoFace input change
-       *
-       * @private
-       */
-       function demoFaceChange() {
-        fabricImgixTwo.faceindex = Number(demoFace.$.faceindex.value);
-      }
-    </script>
-</div>
+    <hr>
+    <h3>Sizing</h3>
+    <paper-radio-group selected="{{sizing}}">
+      <paper-radio-button name>unset</paper-radio-button>
+      <paper-radio-button name="cover">cover</paper-radio-button>
+      <paper-radio-button name="contain">contain</paper-radio-button>
+    </paper-radio-group>
+    <hr>
+    <h3>fit</h3>
+    <paper-radio-group selected="{{fit}}">
+      <paper-radio-button name="clamp">clamp</paper-radio-button>
+      <paper-radio-button name="clip">clip</paper-radio-button>
+      <paper-radio-button name="crop">crop</paper-radio-button>
+      <paper-radio-button name="facearea">facearea</paper-radio-button>
+      <paper-radio-button name="fill">fill</paper-radio-button>
+      <paper-radio-button name="fillmax">fillmax</paper-radio-button>
+      <paper-radio-button name="max">max</paper-radio-button>
+      <paper-radio-button name="min">min</paper-radio-button>
+      <paper-radio-button name="scale">scale</paper-radio-button>
+    </paper-radio-group>
+    <hr>
+    <h3>Sizes:</h3>
+    w
+    <paper-slider value="{{w}}" min="300" max="600" editable></paper-slider>
+    <br>
+    h
+    <paper-slider value="{{h}}" min="300" max="600" editable></paper-slider>
+    <hr>
+    <h3>mask</h3>
+    <paper-radio-group selected="{{mask}}">
+      <paper-radio-button name>unset</paper-radio-button>
+      <paper-radio-button name="corners">corners</paper-radio-button>
+      <paper-radio-button name="ellipse">ellipse</paper-radio-button>
+      <paper-radio-button name="https://assets.imgix.net/docs-mask1.png">url</paper-radio-button>
+    </paper-radio-group>
+    <hr>
+    <fabric-imgix src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+                  smart$="[[smart]]"
+                  sizing$="[[sizing]]"
+                  fit$="[[fit]]"
+                  w$="[[w]]"
+                  h$="[[h]]"
+                  path$="{{path}}"
+                  mask$="[[mask]]"
+    ></fabric-imgix>
+  </template>
+</dom-bind>
 </body>
 </html>
