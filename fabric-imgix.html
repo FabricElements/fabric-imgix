@@ -391,7 +391,7 @@
           _placeholder: {
             type: String,
             value: null,
-            computed: '_placeholder(preview, placeholder, previewSize, src, fm, mask)',
+            computed: '_computePlaceholder(preview, placeholder, previewSize, src, fm, mask)',
           },
         };
 
@@ -477,13 +477,15 @@
        * @return {string|null}
        * @private
        */
-      _placeholder(preview, placeholder, previewSize, src, fm, mask) {
+      _computePlaceholder(preview, placeholder, previewSize, src, fm, mask) {
         let baseImage = null;
         if (preview) {
           baseImage = placeholder ? placeholder : src;
           if (baseImage) {
             baseImage += '?fit=crop';
-            baseImage += `&w=${previewSize}&h=${previewSize}&fm=${fm}&mask=${mask}`;
+            baseImage += fm ? `&fm=${fm}` : '';
+            baseImage += mask ? `&mask=${mask}` : '';
+            baseImage += `&w=${previewSize}&h=${previewSize}`;
           }
         }
         return baseImage ? baseImage : placeholder;
