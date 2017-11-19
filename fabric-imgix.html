@@ -404,8 +404,11 @@
       /**
        * Connected callback
        */
-      connectedCallback() {
-        super.connectedCallback();
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          this._smartObserver();
+        }, []);
         window.addEventListener('resize', () => this._smartObserver());
       }
 
@@ -414,7 +417,7 @@
        */
       static get observers() {
         return [
-          `_globalObserver(sizing, ${FabricImgix.imgIXProperties})`,
+          `_globalObserver(_placeholder, sizing, ${FabricImgix.imgIXProperties})`,
         ];
       }
 
