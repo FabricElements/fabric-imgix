@@ -1,0 +1,259 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-image/iron-image.html">
+
+<dom-module id="fabric-imgix">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <iron-image
+      src="[[url]]"
+      preload
+      fade
+    ></iron-image>
+  </template>
+
+  <script>
+    /**
+     * `fabric-imgix`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+
+    const imgixParameters = [
+      '~text',
+      'auto',
+      'ba',
+      'balph',
+      'bc',
+      'bf',
+      'bg',
+      'bh',
+      'blend',
+      'blur',
+      'bm',
+      'border-radius-inner',
+      'border-radius',
+      'border',
+      'bp',
+      'bri',
+      'bs',
+      'bw',
+      'bx',
+      'by',
+      'ch',
+      'chromasub',
+      'colorquant',
+      'colors',
+      'con',
+      'corner-radius',
+      'crop',
+      'cs',
+      'dl',
+      'dpi',
+      'dpr',
+      'exp',
+      'faceindex',
+      'facepad',
+      'faces',
+      'fit',
+      'flip',
+      'fm',
+      'fp-debug',
+      'fp-x',
+      'fp-y',
+      'fp-z',
+      'gam',
+      'h',
+      'high',
+      'htn',
+      'hue',
+      'invert',
+      'lossless',
+      'mark',
+      'markalign',
+      'markalpha',
+      'markbase',
+      'markfit',
+      'markh',
+      'markpad',
+      'markscale',
+      'markw',
+      'markx',
+      'marky',
+      'mask',
+      'maskbg',
+      'max-h',
+      'max-w',
+      'min-h',
+      'min-w',
+      'mono',
+      'nr',
+      'nrs',
+      'or',
+      'pad',
+      'page',
+      'palette',
+      'px',
+      'q',
+      'rect',
+      'rot',
+      'sat',
+      'sepia',
+      'shad',
+      'sharp',
+      'trim',
+      'trimcolor',
+      'trimmd',
+      'trimsd',
+      'trimtol',
+      'txt',
+      'txtalign',
+      'txtclip',
+      'txtclr',
+      'txtfit',
+      'txtfont',
+      'txtlead',
+      'txtlig',
+      'txtline',
+      'txtlineclr',
+      'txtpad',
+      'txtshad',
+      'txtsize',
+      'txttrack',
+      'txtwidth',
+      'usm',
+      'usmrad',
+      'vib',
+      'w',
+    ];
+
+    /**
+     * `fabric-imgix`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @extends Polymer.Element
+     * @demo demo/index.html
+     */
+    class FabricImgix extends Polymer.Element {
+      /**
+       * @return {string}
+       */
+      static get is() {
+        return 'fabric-imgix';
+      }
+
+      /**
+       * @return {object}
+       */
+      static get properties() {
+        // Create properties for every Imgix parameter
+        const imgixProps = imgixParameters.reduce((acc, prop) => {
+          acc[prop] = {
+            type: String,
+            value: null,
+            observer: 'updateUrl',
+          };
+
+          return acc;
+        }, {});
+
+        return Object.assign({
+          /**
+           * The URL of an image.
+           */
+          src: {
+            type: String,
+            value: '',
+          },
+
+          url: {
+            type: String,
+            value: null,
+          },
+        }, imgixProps);
+      }
+
+      /**
+       * Connected callback
+       */
+      connectedCallback() {
+        super.connectedCallback();
+        this.updateUrl();
+        window.addEventListener(
+          'resize', this.debounce(this.updateUrl.bind(this), 100)
+        );
+      }
+
+      /**
+       * Assemble Url
+       *
+       * @return {string}
+       * @private
+       */
+      assembleUrl() {
+        const clientRect = this.getBoundingClientRect();
+
+        const dimensions = {
+          h: clientRect.height,
+          w: clientRect.width,
+        };
+
+        const imageParams = imgixParameters
+          .filter((prop) => this[prop] !== null)
+          .reduce((acc, prop) => {
+            acc[prop] = this[prop];
+            return acc;
+          }, {});
+
+        const finalProps = Object.assign({}, dimensions, imageParams);
+
+        return this.src + '?' + Object.entries(finalProps)
+          .map((pair) => `${pair[0]}=${encodeURIComponent(pair[1])}`)
+          .join('&');
+      }
+
+      /**
+       * Update Url
+       *
+       * @private
+       */
+      updateUrl() {
+        this.url = this.assembleUrl();
+      }
+
+      /**
+       * Debounce
+       *
+       * @param {Function} func
+       * @param {Number} wait
+       * @param {Boolean} immediate
+       * @return {Function}
+       * @private
+       */
+      debounce(func, wait = 20, immediate = false) {
+        let timeout;
+        return (...args) => {
+          let later = () => {
+            timeout = null;
+            if (!immediate) func(...args);
+          };
+          let callNow = immediate && !timeout;
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+          if (callNow) func(...args);
+        };
+      }
+    }
+
+    window.customElements.define(FabricImgix.is, FabricImgix);
+  </script>
+</dom-module>
