@@ -432,9 +432,8 @@
       _smartObserver(smart = false) {
         const clientRect = this.getBoundingClientRect();
         if (smart || this.smart) {
+          this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
           this.fit = 'crop';
-          this['max-h'] = clientRect.height ? clientRect.height : this.previewSize;
-          this['max-w'] = clientRect.width ? clientRect.width : this.previewSize;
           this.h = clientRect.height ? clientRect.height : this.previewSize;
           this.w = clientRect.width ? clientRect.width : this.previewSize;
           this.sizing = 'cover';
@@ -452,12 +451,7 @@
         let path = `${this.src}?`;
         const properties = FabricImgix.imgIXProperties;
         let imgIXObject = {};
-        if (this.sizing) {
-          const clientRect = this.getBoundingClientRect();
-          this.fit = 'crop';
-          this['max-h'] = clientRect.height ? clientRect.height : this.previewSize;
-          this['max-w'] = clientRect.width ? clientRect.width : this.previewSize;
-        }
+        if (this.sizing) this.fit = 'crop';
         for (let i = 0; i < properties.length; i++) {
           const name = properties[i];
           if (this[name]) {
