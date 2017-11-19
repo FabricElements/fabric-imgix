@@ -6,13 +6,44 @@
     <style>
       :host {
         display: block;
+        position: relative;
+        box-sizing: border-box;
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      iron-image {
+        box-sizing: border-box;
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        z-index: 1;
+      }
+
+      :host([sizing]) iron-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
       }
     </style>
 
     <iron-image
+      alt$="[[alt]]"
+      crossorigin$="[[crossorigin]]"
+      error$="{{error}}"
+      fade$="{{fade}}"
+      height$="{{height}}"
+      loaded$="{{loaded}}"
+      loading$="{{loading}}"
+      placeholder$="[[_placeholder]]"
+      position$="{{position}}"
+      preload$="{{preload}}"
+      preventLoad$="{{preventLoad}}"
+      sizing$="{{sizing}}"
       src$="[[path]]"
-      preload
-      fade
+      width$="{{width}}"
     ></iron-image>
   </template>
 
@@ -208,7 +239,6 @@
       placeholder: {
         type: String,
         value: null,
-        // observer: '_placeholderChanged'
       },
 
       /**
@@ -338,11 +368,41 @@
           smart: {
             type: Boolean,
             value: false,
-            observer: '_getBounding',
+            observer: '_smartObserver',
           },
+          /**
+           * The final image path
+           */
           path: {
             type: String,
             value: null,
+            reflectToAttribute: true,
+            notify: true,
+          },
+          /**
+           * Preview image size
+           */
+          preview: {
+            type: Boolean,
+            value: true,
+          },
+          /**
+           * Preview image size
+           */
+          previewSize: {
+            type: Number,
+            value: 10,
+          },
+          /**
+           * Smart placeholder returns:
+           * An image with `previewSize`
+           * Will use the `placeholder` image if available
+           * or the `src` image
+           */
+          _placeholder: {
+            type: String,
+            value: null,
+            computed: '_placeholder(preview, placeholder, previewSize, src, fm, mask)',
           },
         };
 
@@ -357,8 +417,7 @@
        */
       connectedCallback() {
         super.connectedCallback();
-        this._getBounding();
-        window.addEventListener('resize', () => this._getBounding());
+        window.addEventListener('resize', () => this._smartObserver());
       }
 
       /**
@@ -371,21 +430,23 @@
       }
 
       /**
-       * Assemble Url
+       * Smart observer
+       * This method will determine the right size
+       * and apply the new size to the image
        *
-       * @return {Object}
+       * @param {boolean} smart
        * @private
        */
-      _getBounding() {
+      _smartObserver(smart = false) {
         const clientRect = this.getBoundingClientRect();
-        if (this.smart) {
+        if (smart || this.smart) {
           this.fit = 'crop';
-          this.h = clientRect.height;
-          this.w = clientRect.width;
-          this['max-h'] = clientRect.height;
-          this['max-w'] = clientRect.width;
+          this['max-h'] = clientRect.height ? clientRect.height : this.previewSize;
+          this['max-w'] = clientRect.width ? clientRect.width : this.previewSize;
+          this.h = clientRect.height ? clientRect.height : this.previewSize;
+          this.w = clientRect.width ? clientRect.width : this.previewSize;
+          this.sizing = 'cover';
         }
-        return clientRect;
       }
 
       /**
@@ -399,13 +460,11 @@
         let path = `${this.src}?`;
         const properties = FabricImgix.imgIXProperties;
         let imgIXObject = {};
-        if (this.sizing === 'cover') {
-          this.smart = true;
-        }
-        if (this.sizing === 'contain') {
-          const size = this._getBounding();
-          this['max-h'] = size.height;
-          this['max-w'] = size.width;
+        if (this.sizing) {
+          const clientRect = this.getBoundingClientRect();
+          this.fit = 'crop';
+          this['max-h'] = clientRect.height ? clientRect.height : this.previewSize;
+          this['max-w'] = clientRect.width ? clientRect.width : this.previewSize;
         }
         for (let i = 0; i < properties.length; i++) {
           const name = properties[i];
@@ -415,6 +474,30 @@
           }
         }
         this.path = path;
+      }
+
+      /**
+       * Compute placeholder image
+       *
+       * @param {boolean} preview
+       * @param {string|null} placeholder
+       * @param {number|null} previewSize
+       * @param {string|null} src
+       * @param {number|null} fm
+       * @param {string|null} mask
+       * @return {string|null}
+       * @private
+       */
+      _placeholder(preview, placeholder, previewSize, src, fm, mask) {
+        let baseImage = null;
+        if (preview) {
+          baseImage = placeholder ? placeholder : src;
+          if (baseImage) {
+            baseImage += '?fit=crop';
+            baseImage += `&w=${previewSize}&h=${previewSize}&fm=${fm}&mask=${mask}`;
+          }
+        }
+        return baseImage ? baseImage : placeholder;
       }
     }
 
