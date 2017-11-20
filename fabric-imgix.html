@@ -416,15 +416,16 @@
         super.connectedCallback();
         this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
         this._checkIfVisible();
-        window.addEventListener('WebComponentsReady', () => {
-          this._checkIfVisible();
-        });
-        window.addEventListener('resize', () => {
-          this._checkIfVisible();
-        });
-        window.addEventListener('scroll', () => {
-          this._checkIfVisible();
-        });
+        this.intervalId = setInterval(() => this._checkIfVisible(), 500);
+      }
+
+      /**
+       * Disconnected callback
+       */
+      disconnectedCallback() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
       }
 
       /**
