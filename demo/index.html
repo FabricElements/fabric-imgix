@@ -79,12 +79,21 @@
       <paper-radio-button name="https://assets.imgix.net/docs-mask1.png">url</paper-radio-button>
     </paper-radio-group>
     <hr>
+    <h3>Adjustment</h3>
+    Brightness
+    <paper-slider value="{{bri}}" min="-100" max="100" editable></paper-slider>
+    Contrast
+    <paper-slider value="{{con}}" min="-100" max="100" editable></paper-slider>
+    <hr>
+
     <fabric-imgix src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
                   smart$="[[smart]]"
                   sizing$="[[sizing]]"
                   fit$="[[fit]]"
                   w$="[[w]]"
                   h$="[[h]]"
+                  bri$="[[bri]]"
+                  con$="[[con]]"
                   path$="{{path}}"
                   mask$="[[mask]]"
     ></fabric-imgix>
