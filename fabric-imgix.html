@@ -419,9 +419,12 @@
         this.intervalId = setInterval(() => this._checkIfVisible(), 500);
       }
 
-      disconnectedCallback () {
+      /**
+       * Disconnected callback
+       */
+      disconnectedCallback() {
         if (this.intervalId) {
-          clearInterval(this.intervalId)
+          clearInterval(this.intervalId);
         }
       }
 
