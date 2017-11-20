@@ -415,7 +415,7 @@
       connectedCallback() {
         super.connectedCallback();
         this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
-
+        this._checkIfVisible();
         window.addEventListener('WebComponentsReady', () => {
           this._checkIfVisible();
         });
@@ -432,9 +432,10 @@
        */
       ready() {
         super.ready();
-        this._checkIfVisible();
         Polymer.RenderStatus.afterNextRender(this, () => {
-          this._checkIfVisible();
+          setTimeout(() => {
+            this._checkIfVisible();
+          }, 3000);
         }, []);
       }
 
@@ -454,8 +455,9 @@
        */
       _smartSize(smart) {
         if (smart) {
-          let width = Math.floor(this.offsetWidth);
-          let height = Math.floor(this.offsetHeight);
+          const viewportOffset = this.getBoundingClientRect();
+          let width = viewportOffset.width;
+          let height = viewportOffset.height;
           if (width <= 10) width = this.previewSize;
           if (height <= 10) height = this.previewSize;
           this.w = width;
@@ -464,7 +466,7 @@
       }
 
       /**
-       * Check if the image is close to the offsete of the page and returns boolean.
+       * Check if the image is close to the offset of the page and returns boolean.
        */
       _checkIfVisible() {
         const itemOffset = this.getBoundingClientRect();
