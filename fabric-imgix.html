@@ -401,6 +401,13 @@
             readOnly: true,
             computed: `_computePath(src, visible, ${FabricImgix.imgIXProperties})`,
           },
+          /**
+           * True after the image is visible
+           */
+          didShow: {
+            type: Boolean,
+            value: false,
+          },
         };
 
         /**
@@ -417,6 +424,15 @@
         this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
         this._checkIfVisible();
         this.intervalId = setInterval(() => this._checkIfVisible(), 500);
+        window.addEventListener('WebComponentsReady', () => {
+          this._checkIfVisible();
+        });
+        window.addEventListener('resize', () => {
+          this._checkIfVisible();
+        });
+        window.addEventListener('scroll', () => {
+          this._checkIfVisible();
+        });
       }
 
       /**
@@ -426,18 +442,6 @@
         if (this.intervalId) {
           clearInterval(this.intervalId);
         }
-      }
-
-      /**
-       * Ready event
-       */
-      ready() {
-        super.ready();
-        Polymer.RenderStatus.afterNextRender(this, () => {
-          setTimeout(() => {
-            this._checkIfVisible();
-          }, 3000);
-        }, []);
       }
 
       /**
@@ -468,13 +472,18 @@
 
       /**
        * Check if the image is close to the offset of the page and returns boolean.
+       *
+       * @return {boolean}
        */
       _checkIfVisible() {
+        this._smartSize(!!this.smart);
+        if (this.didShow) return true;
+
         const itemOffset = this.getBoundingClientRect();
         const windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
         const visible = !(itemOffset.bottom < 0 || itemOffset.top - windowHeight >= 0);
         if (visible) {
-          this._smartSize(!!this.smart);
+          this.didShow = true;
         }
         this.visible = visible;
       }
