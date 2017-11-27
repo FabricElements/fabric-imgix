@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
 
 <dom-module id="fabric-imgix">
   <template>
@@ -59,7 +60,9 @@
      * @extends Polymer.Element
      * @demo demo/index.html
      */
-    class FabricImgix extends Polymer.Element {
+    class FabricImgix extends Polymer.mixinBehaviors([
+      Polymer.IronResizableBehavior,
+    ], Polymer.Element) {
       /**
        * @return {string}
        */
@@ -357,6 +360,7 @@
           smart: {
             type: Boolean,
             value: false,
+            observer: '_smartObserver',
           },
           /**
            * Preview image size
@@ -391,6 +395,14 @@
             computed: '_computePlaceholder(preview, placeholder, previewSize, src, fm, mask)',
           },
           /**
+           * The element is ready
+           */
+          _ready: {
+            type: Boolean,
+            value: false,
+            observer: '_readyObserver'
+          },
+          /**
            * The final image path
            */
           path: {
@@ -399,7 +411,7 @@
             reflectToAttribute: true,
             notify: true,
             readOnly: true,
-            computed: `_computePath(src, visible, ${FabricImgix.imgIXProperties})`,
+            computed: `_computePath(src, _ready, visible, ${FabricImgix.imgIXProperties})`,
           },
           /**
            * True after the image is visible
@@ -422,26 +434,20 @@
       connectedCallback() {
         super.connectedCallback();
         this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
-        this._checkIfVisible();
-        this.intervalId = setInterval(() => this._checkIfVisible(), 500);
-        window.addEventListener('WebComponentsReady', () => {
-          this._checkIfVisible();
-        });
-        window.addEventListener('resize', () => {
-          this._checkIfVisible();
-        });
-        window.addEventListener('scroll', () => {
-          this._checkIfVisible();
-        });
+        this.addEventListener('iron-resize', () => this._smartSize());
+        window.addEventListener('scroll', () => this._checkIfVisible());
       }
 
       /**
-       * Disconnected callback
+       * Ready event
        */
-      disconnectedCallback() {
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
-        }
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          setTimeout(() => {
+            this._ready = true;
+          }, 500);
+        }, []);
       }
 
       /**
@@ -449,7 +455,6 @@
        */
       static get observers() {
         return [
-          '_baseObserver(smart)',
           '_sizingObserver(sizing)',
         ];
       }
@@ -458,13 +463,15 @@
        * Smart size observer
        * @param {boolean} smart
        */
-      _smartSize(smart) {
-        if (smart) {
+      _smartSize() {
+        if (this.smart) {
           const viewportOffset = this.getBoundingClientRect();
           let width = viewportOffset.width;
           let height = viewportOffset.height;
           if (width <= 10) width = this.previewSize;
           if (height <= 10) height = this.previewSize;
+          width = Math.round(width / 10) * 10;
+          height = Math.round(height / 10) * 10;
           this.w = width;
           this.h = height;
         }
@@ -472,20 +479,11 @@
 
       /**
        * Check if the image is close to the offset of the page and returns boolean.
-       *
-       * @return {boolean}
        */
       _checkIfVisible() {
-        this._smartSize(!!this.smart);
-        if (this.didShow) return true;
-
         const itemOffset = this.getBoundingClientRect();
         const windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-        const visible = !(itemOffset.bottom < 0 || itemOffset.top - windowHeight >= 0);
-        if (visible) {
-          this.didShow = true;
-        }
-        this.visible = visible;
+        this.visible = !(itemOffset.bottom < 0 || itemOffset.top - windowHeight >= 0);
       }
 
       /**
@@ -502,13 +500,15 @@
        */
       _computePlaceholder(preview, placeholder, previewSize, src, fm, mask) {
         let baseImage = '';
+        if (!src || typeof(src) === 'undefined') return baseImage;
         if (preview) {
+          const size = previewSize >= 10 ? previewSize : 10;
           baseImage = placeholder ? placeholder : src;
           if (baseImage) {
             baseImage += '?fit=crop';
             baseImage += fm ? `&fm=${fm}` : '';
             baseImage += mask ? `&mask=${mask}` : '';
-            baseImage += `&w=${previewSize}&h=${previewSize}`;
+            baseImage += `&w=${size}&h=${size}`;
           }
         }
         return baseImage ? baseImage : placeholder;
@@ -530,18 +530,14 @@
        * @param {boolean} smart
        * @private
        */
-      _baseObserver(smart = false) {
+      _smartObserver(smart) {
         if (smart) {
-          this._smartSize(smart);
-          if (!this.preload) this.preload = true;
-          if (!this.preview) this.preview = true;
-          if (!this.fade) this.fade = true;
-          if (this.fit !== 'crop') {
-            this.fit = 'crop';
-          }
-          if (this.sizing !== 'cover') {
-            this.sizing = 'cover';
-          }
+          this._smartSize();
+          this.preload = true;
+          this.preview = true;
+          this.fade = true;
+          this.fit = 'crop';
+          this.sizing = 'cover';
         }
       }
 
@@ -549,14 +545,16 @@
        * Compute path
        *
        * @param {string|null} src
+       * @param {boolean} ready
        * @param {boolean} visible
        * @return {*}
        * @private
        */
-      _computePath(src, visible) {
-        if (!src || !visible) {
+      _computePath(src, ready, visible) {
+        if (!src || typeof(src) === 'undefined' || !ready || !visible) {
           return '';
         }
+        if (this.w <= 10 || this.h <= 10) return '';
         let path = `${src}?`;
         const properties = FabricImgix.imgIXProperties;
         let imgIXObject = {};
@@ -568,6 +566,19 @@
           }
         }
         return path;
+      }
+
+      /**
+       * Ready observer
+       *
+       * @param {boolean} ready
+       * @private
+       */
+      _readyObserver(ready) {
+        if (ready) {
+          this._smartSize();
+          this._checkIfVisible();
+        }
       }
     }
 
