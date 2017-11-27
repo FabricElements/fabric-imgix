@@ -372,13 +372,6 @@
           /**
            * Preview image size
            */
-          visible: {
-            type: Boolean,
-            value: true,
-          },
-          /**
-           * Preview image size
-           */
           previewSize: {
             type: Number,
             value: 10,
@@ -411,14 +404,7 @@
             reflectToAttribute: true,
             notify: true,
             readOnly: true,
-            computed: `_computePath(src, _ready, visible, ${FabricImgix.imgIXProperties})`,
-          },
-          /**
-           * True after the image is visible
-           */
-          didShow: {
-            type: Boolean,
-            value: false,
+            computed: `_computePath(src, _ready, ${FabricImgix.imgIXProperties})`,
           },
         };
 
@@ -435,7 +421,6 @@
         super.connectedCallback();
         this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
         this.addEventListener('iron-resize', () => this._smartSize());
-        window.addEventListener('scroll', () => this._checkIfVisible());
       }
 
       /**
@@ -461,7 +446,6 @@
 
       /**
        * Smart size observer
-       * @param {boolean} smart
        */
       _smartSize() {
         if (this.smart) {
@@ -475,15 +459,6 @@
           this.w = width;
           this.h = height;
         }
-      }
-
-      /**
-       * Check if the image is close to the offset of the page and returns boolean.
-       */
-      _checkIfVisible() {
-        const itemOffset = this.getBoundingClientRect();
-        const windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-        this.visible = !(itemOffset.bottom < 0 || itemOffset.top - windowHeight >= 0);
       }
 
       /**
@@ -546,12 +521,11 @@
        *
        * @param {string|null} src
        * @param {boolean} ready
-       * @param {boolean} visible
        * @return {*}
        * @private
        */
-      _computePath(src, ready, visible) {
-        if (!src || typeof(src) === 'undefined' || !ready || !visible) {
+      _computePath(src, ready) {
+        if (!src || typeof(src) === 'undefined' || !ready) {
           return '';
         }
         if (this.w <= 10 || this.h <= 10) return '';
@@ -577,7 +551,6 @@
       _readyObserver(ready) {
         if (ready) {
           this._smartSize();
-          this._checkIfVisible();
         }
       }
     }
