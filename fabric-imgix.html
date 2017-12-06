@@ -528,7 +528,9 @@
         if (!src || typeof(src) === 'undefined' || !ready) {
           return '';
         }
-        if (this.w <= 10 || this.h <= 10) return '';
+
+        if (this.smart && (this.w <= 10 || this.h <= 10)) return '';
+
         let path = `${src}?`;
         const properties = FabricImgix.imgIXProperties;
         let imgIXObject = {};
