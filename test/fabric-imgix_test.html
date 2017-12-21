@@ -69,7 +69,7 @@
 
     test('Should return image url with set properties', (done) => {
       const ironImg = element.shadowRoot.querySelector('iron-image');
-      const testURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&hue=50&'
+      const testURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&hue=50&';
       oncePropChanged(ironImg, 'loaded').then(() => {
         expect(ironImg.src).to.be.equal(testURL);
         done();
@@ -91,7 +91,7 @@
 
     test('Should update size if smart is applied', (done) => {
       const ironImg = element.shadowRoot.querySelector('iron-image');
-      
+
       oncePropChanged(ironImg, 'loaded').then(() => {
         expect(ironImg.src).to.be.equal(defaultURL);
 
