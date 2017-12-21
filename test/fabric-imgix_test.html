@@ -9,17 +9,102 @@
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
+  <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
   <link rel="import" href="../fabric-imgix.html">
+  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">  
+
+  <custom-style>
+    <style is="custom-style">
+      fabric-imgix {
+        height: 500px;
+        width: 700px;
+        background-color: lightgrey;
+      }
+    </style>
+  </custom-style>
 </head>
 <body>
 
-<test-fixture id="BasicTestFixture">
+<test-fixture id="basicFixture">
   <template>
-    <fabric-imgix></fabric-imgix>
+    <fabric-imgix src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+                  hue="50"
+    ></fabric-imgix>
   </template>
 </test-fixture>
 
-<script></script>
+<test-fixture id="smartFixture">
+  <template>
+    <fabric-imgix src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+                  w="300"
+                  h="300"
+    ></fabric-imgix>
+  </template>
+</test-fixture>
+
+<script>
+  const oncePropChanged = (el, prop) => {
+    return new Promise((resolve, reject) => {
+      const dashedPropName = prop
+        .replace(/[A-Z]/g, (match) => `-${match[0].toLowerCase()}`)
+        .concat('-changed');
+      el.addEventListener(dashedPropName, listener);
+      /**
+       * listener
+       * @param {Object} event
+       */
+      function listener(event) {
+        el.removeEventListener(dashedPropName, listener);
+        resolve(event);
+      }
+    });
+  };
+
+  suite('Basic behaviour', () => {
+    let element;
+
+    setup(() => {
+      element = fixture('basicFixture');
+    });
+
+    test('Should return image url with set properties', (done) => {
+      const ironImg = element.shadowRoot.querySelector('iron-image');
+      const testURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&hue=50&'
+      oncePropChanged(ironImg, 'loaded').then(() => {
+        expect(ironImg.src).to.be.equal(testURL);
+        done();
+      })
+      .catch(done);
+    });
+  });
+
+  suite('Smart behaviour', () => {
+    let element;
+    let defaultURL;
+    let smartURL;
+
+    setup(() => {
+      element = fixture('smartFixture');
+      defaultURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&h=300&w=300&';
+      smartURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&fit=crop&h=500&w=700&';
+    });
+
+    test('Should update size if smart is applied', (done) => {
+      const ironImg = element.shadowRoot.querySelector('iron-image');
+      
+      oncePropChanged(ironImg, 'loaded').then(() => {
+        expect(ironImg.src).to.be.equal(defaultURL);
+
+        element.smart = true;
+
+        expect(ironImg.src).to.be.equal(smartURL);
+
+        done();
+      })
+      .catch(done);
+    });
+  });
+</script>
 
 </body>
 </html>
