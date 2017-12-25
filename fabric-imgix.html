@@ -377,6 +377,13 @@
             value: 10,
           },
           /**
+           * Network connection is online
+           */
+          _online: {
+            type: Boolean,
+            value: true,
+          },
+          /**
            * Smart placeholder returns:
            * An image with `previewSize`
            * Will use the `placeholder` image if available
@@ -384,8 +391,7 @@
            */
           _placeholder: {
             type: String,
-            value: null,
-            computed: '_computePlaceholder(preview, placeholder, previewSize, src, fm, mask)',
+            computed: '_computePlaceholder(preview, placeholder, previewSize, src, fm, mask, _online)',
           },
           /**
            * The element is ready
@@ -400,11 +406,10 @@
            */
           path: {
             type: String,
-            value: null,
             reflectToAttribute: true,
             notify: true,
             readOnly: true,
-            computed: `_computePath(src, _ready, ${FabricImgix.imgIXProperties})`,
+            computed: `_computePath(src, _ready, _online, ${FabricImgix.imgIXProperties})`,
           },
         };
 
@@ -419,7 +424,15 @@
        */
       connectedCallback() {
         super.connectedCallback();
-        this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
+
+        // const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        // if (connection) connection.addEventListener('onchange', this._getConnectionDefaults());
+
+        this.networkStatus();
+        window.addEventListener('online', () => this.networkStatus(), true);
+        window.addEventListener('offline', () => this.networkStatus(), true);
+
+        this._getConnectionDefaults();
         this.addEventListener('iron-resize', () => this._smartSize());
       }
 
@@ -429,9 +442,7 @@
       ready() {
         super.ready();
         Polymer.RenderStatus.afterNextRender(this, () => {
-          setTimeout(() => {
-            this._ready = true;
-          }, 500);
+          this._ready = true;
         }, []);
       }
 
@@ -470,10 +481,11 @@
        * @param {string|null} src
        * @param {number|null} fm
        * @param {string|null} mask
+       * @param {boolean} online
        * @return {string|null}
        * @private
        */
-      _computePlaceholder(preview, placeholder, previewSize, src, fm, mask) {
+      _computePlaceholder(preview, placeholder, previewSize, src, fm, mask, online) {
         let baseImage = '';
         if (!src || typeof(src) === 'undefined') return baseImage;
         if (preview) {
@@ -486,7 +498,13 @@
             baseImage += `&w=${size}&h=${size}`;
           }
         }
-        return baseImage ? baseImage : placeholder;
+
+        const url = baseImage ? baseImage : placeholder;
+
+        // Don't display the image if offline and image is not in cache
+        if (!online && !this._cached(url)) return '';
+
+        return url;
       }
 
       /**
@@ -521,10 +539,11 @@
        *
        * @param {string|null} src
        * @param {boolean} ready
+       * @param {boolean} online
        * @return {*}
        * @private
        */
-      _computePath(src, ready) {
+      _computePath(src, ready, online) {
         if (!src || typeof(src) === 'undefined' || !ready) {
           return '';
         }
@@ -541,6 +560,10 @@
             path += `${name}=${this[name]}&`;
           }
         }
+
+        // Don't display the image if offline and image is not in cache
+        if (!online && !this._cached(path)) return '';
+
         return path;
       }
 
@@ -554,6 +577,43 @@
         if (ready) {
           this._smartSize();
         }
+      }
+
+      /**
+       * Get connection defaults
+       *
+       * @private
+       */
+      _getConnectionDefaults() {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
+          if (connection.downlink >= 7.2 || connection.effectiveType === '4g') {
+            this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
+          }
+        } else {
+          this.dpr = this.dpr ? this.dpr : window.devicePixelRatio;
+        }
+      }
+
+      /**
+       * Check network status
+       */
+      networkStatus() {
+        this._online = navigator.onLine;
+      }
+
+      /**
+       * Check if image is on cache
+       *
+       * @param {string|null} src
+       * @return {boolean}
+       * @private
+       */
+      _cached(src) {
+        if (!src) return false;
+        let image = new Image();
+        image.src = src;
+        return image.complete;
       }
     }
 
