@@ -11,7 +11,7 @@
 
   <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
   <link rel="import" href="../fabric-imgix.html">
-  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">  
+  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
 
   <custom-style>
     <style is="custom-style">
@@ -28,6 +28,7 @@
 <test-fixture id="basicFixture">
   <template>
     <fabric-imgix src="https://images.unsplash.com/photo-1510025369388-f613ec4bc10b"
+                  dpr="1"
                   hue="50"
     ></fabric-imgix>
   </template>
@@ -49,6 +50,7 @@
         .replace(/[A-Z]/g, (match) => `-${match[0].toLowerCase()}`)
         .concat('-changed');
       el.addEventListener(dashedPropName, listener);
+
       /**
        * listener
        * @param {Object} event
@@ -74,34 +76,30 @@
         expect(ironImg.src).to.be.equal(testURL);
         done();
       })
-      .catch(done);
+        .catch(done);
     });
   });
 
   suite('Smart behaviour', () => {
     let element;
-    let defaultURL;
-    let smartURL;
 
     setup(() => {
       element = fixture('smartFixture');
-      defaultURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&h=300&w=300&';
-      smartURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&fit=crop&h=500&w=700&';
     });
 
     test('Should update size if smart is applied', (done) => {
       const ironImg = element.shadowRoot.querySelector('iron-image');
 
       oncePropChanged(ironImg, 'loaded').then(() => {
-        expect(ironImg.src).to.be.equal(defaultURL);
+        const original = ironImg.src;
 
         element.smart = true;
 
-        expect(ironImg.src).to.be.equal(smartURL);
+        expect(original).to.not.equal(ironImg.src);
 
         done();
       })
-      .catch(done);
+        .catch(done);
     });
   });
 </script>
