@@ -6,19 +6,21 @@
 
   <title>fabric-imgix demo</title>
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../../polymer/lib/elements/custom-style.html">
-  <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
-  <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
-  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
-  <link rel="import" href="../../paper-input/paper-input.html">
-  <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
-  <link rel="import" href="../../paper-listbox/paper-listbox.html">
-  <link rel="import" href="../../paper-item/paper-item.html">  
-  <link rel="import" href="../../paper-radio-button/paper-radio-button.html">
-  <link rel="import" href="../../paper-radio-group/paper-radio-group.html">
-  <link rel="import" href="../../paper-slider/paper-slider.html">
-  <link rel="import" href="../fabric-imgix.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script type="module">
+    import '@polymer/polymer/lib/elements/custom-style.js';
+    import '@polymer/polymer/lib/elements/dom-bind.js';
+    import '@polymer/paper-checkbox/paper-checkbox.js';
+    import '@polymer/paper-toggle-button/paper-toggle-button.js';
+    import '@polymer/paper-input/paper-input.js';
+    import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
+    import '@polymer/neon-animation/web-animations.html';
+    import '@polymer/paper-listbox/paper-listbox.js';
+    import '@polymer/paper-item/paper-item.js';
+    import '@polymer/paper-radio-button/paper-radio-button.js';
+    import '@polymer/paper-radio-group/paper-radio-group.js';
+    import '@polymer/paper-slider/paper-slider.js';
+    import '../fabric-imgix.js';</script>
 
   <custom-style>
     <style is="custom-style">
@@ -36,7 +38,7 @@
       }
 
       .container {
-        display: flex;      
+        display: flex;
       }
 
       .aside {
