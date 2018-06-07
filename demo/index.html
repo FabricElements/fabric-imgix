@@ -13,14 +13,14 @@
     import '@polymer/paper-checkbox/paper-checkbox.js';
     import '@polymer/paper-toggle-button/paper-toggle-button.js';
     import '@polymer/paper-input/paper-input.js';
+    import '@polymer/neon-animation/neon-animations.js';
     import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
-    import '@polymer/neon-animation/web-animations.html';
     import '@polymer/paper-listbox/paper-listbox.js';
     import '@polymer/paper-item/paper-item.js';
     import '@polymer/paper-radio-button/paper-radio-button.js';
     import '@polymer/paper-radio-group/paper-radio-group.js';
-    import '@polymer/paper-slider/paper-slider.js';
-    import '../fabric-imgix.js';</script>
+    import '@polymer/paper-slider/paper-slider.js';</script>
+  <script type="module" src="../fabric-imgix.js"></script>
 
   <custom-style>
     <style is="custom-style">
@@ -70,7 +70,7 @@
         <!--<paper-input always-float-label label="Sizing" value="{{sizing}}"></paper-input>-->
 
         <h3>Sizing</h3>
-        <paper-dropdown-menu label="Select sizing">
+        <paper-dropdown-menu label="Select sizing" no-animations>
           <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{sizing}}">
             <paper-item name>unset</paper-item>
             <paper-item name="cover">cover</paper-item>
@@ -78,7 +78,7 @@
           </paper-listbox>
         </paper-dropdown-menu>
         <h3>fit</h3>
-        <paper-dropdown-menu label="Select fit">
+        <paper-dropdown-menu label="Select fit" no-animations>
           <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{fit}}">
             <paper-item name="clamp">clamp</paper-item>
             <paper-item name="clip">clip</paper-item>
@@ -92,7 +92,7 @@
           </paper-listbox>
         </paper-dropdown-menu>
         <h3>Mask</h3>
-        <paper-dropdown-menu label="Select mask">
+        <paper-dropdown-menu label="Select mask" no-animations>
           <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{mask}}">
             <paper-item name>unset</paper-item>
             <paper-item name="corners">corners</paper-item>
@@ -101,7 +101,7 @@
           </paper-listbox>
         </paper-dropdown-menu>
         <h3>Flip direction</h3>
-        <paper-dropdown-menu label="Select flip axis">
+        <paper-dropdown-menu label="Select flip axis" no-animations>
           <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{flip}}">
             <paper-item name>unset</paper-item>
             <paper-item name="h">horizontal</paper-item>
