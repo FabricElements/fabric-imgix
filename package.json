@@ -1,11 +1,25 @@
 {
-  "name": "name",
+  "name": "@fabricelements/fabric-imgix",
   "version": "0.0.1",
   "license": "BSD-3-Clause",
+  "main": "fabric-imgix.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:FabricElements/fabric-imgix.git"
+  },
   "devDependencies": {
     "eslint": "^4.14.0",
     "eslint-config-google": "^0.9.1",
-    "eslint-plugin-html": "^3.2.2"
+    "eslint-plugin-html": "^3.2.2",
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.18",
+    "wct-browser-legacy": "^0.0.1-pre.11",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@polymer/paper-checkbox": "^3.0.0-pre.18",
+    "@polymer/paper-input": "^3.0.0-pre.18",
+    "@polymer/paper-toggle-button": "^3.0.0-pre.18",
+    "@polymer/paper-radio-group": "^3.0.0-pre.18",
+    "@polymer/paper-radio-button": "^3.0.0-pre.18",
+    "@polymer/paper-slider": "^3.0.0-pre.18"
   },
   "scripts": {
     "lint": "npm run lint:javascript && polymer lint",
@@ -13,5 +27,20 @@
     "test": "polymer test",
     "test:integration": "polymer build # test that psk builds without error with the CLI"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0",
+    "@polymer/iron-image": "^3.0.0-pre.18",
+    "@polymer/paper-dropdown-menu": "^3.0.0-pre.18",
+    "@polymer/paper-listbox": "^3.0.0-pre.18",
+    "@polymer/paper-item": "^3.0.0-pre.18",
+    "@polymer/iron-selector": "^3.0.0-pre.18",
+    "@polymer/iron-resizable-behavior": "^3.0.0-pre.18"
+  },
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0",
+    "@webcomponents/webcomponentsjs": "2.0.0-beta.2"
+  }
 }
