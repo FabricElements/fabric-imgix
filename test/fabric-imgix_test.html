@@ -6,12 +6,14 @@
 
   <title>fabric-imgix test</title>
 
-  <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script src="../../wct-browser-legacy/browser.js"></script>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
 
-  <script type="module" src="../../@polymer/polymer/lib/elements/dom-bind.js"></script>
-  <script type="module" src="../fabric-imgix.js"></script>
-  <script type="module" src="../../@polymer/paper-toggle-button/paper-toggle-button.js"></script>
+  <script type="module">
+    import '@polymer/polymer/lib/elements/dom-bind.js';
+    import '@polymer/paper-toggle-button/paper-toggle-button.js';
+    import '../fabric-imgix.js';
+  </script>
 
   <custom-style>
     <style is="custom-style">
@@ -43,68 +45,65 @@
   </template>
 </test-fixture>
 
-<script type="module">
-import '@polymer/polymer/lib/elements/dom-bind.js';
-import '../fabric-imgix.js';
-import '@polymer/paper-toggle-button/paper-toggle-button.js';
-const oncePropChanged = (el, prop) => {
-  return new Promise((resolve, reject) => {
-    const dashedPropName = prop
-      .replace(/[A-Z]/g, (match) => `-${match[0].toLowerCase()}`)
-      .concat('-changed');
-    el.addEventListener(dashedPropName, listener);
+<script>
+  const oncePropChanged = (el, prop) => {
+    return new Promise((resolve, reject) => {
+      const dashedPropName = prop
+        .replace(/[A-Z]/g, (match) => `-${match[0].toLowerCase()}`)
+        .concat('-changed');
+      el.addEventListener(dashedPropName, listener);
 
-    /**
-     * listener
-     * @param {Object} event
-     */
-    function listener(event) {
-      el.removeEventListener(dashedPropName, listener);
-      resolve(event);
-    }
-  });
-};
+      /**
+      * listener
+      * @param {Object} event
+      */
+      function listener(event) {
+        el.removeEventListener(dashedPropName, listener);
+        resolve(event);
+      }
+    });
+  };
 
-suite('Basic behaviour', () => {
-  let element;
+  suite('Basic behaviour', () => {
+    let element;
 
-  setup(() => {
-    element = fixture('basicFixture');
-  });
+    setup(() => {
+      element = fixture('basicFixture');
+    });
 
-  test('Should return image url with set properties', (done) => {
-    const ironImg = element.shadowRoot.querySelector('iron-image');
-    const testURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&hue=50&';
-    oncePropChanged(ironImg, 'loaded').then(() => {
-      expect(ironImg.src).to.be.equal(testURL);
-      done();
-    })
-      .catch(done);
-  });
-});
-
-suite('Smart behaviour', () => {
-  let element;
-
-  setup(() => {
-    element = fixture('smartFixture');
+    test('Should return image url with set properties', (done) => {
+      const ironImg = element.shadowRoot.querySelector('iron-image');
+      const testURL = 'https://images.unsplash.com/photo-1510025369388-f613ec4bc10b?dpr=1&hue=50&';
+      oncePropChanged(ironImg, 'loaded').then(() => {
+        expect(ironImg.src).to.be.equal(testURL);
+        done();
+      })
+        .catch(done);
+    });
   });
 
-  test('Should update size if smart is applied', (done) => {
-    const ironImg = element.shadowRoot.querySelector('iron-image');
+  suite('Smart behaviour', () => {
+    let element;
 
-    oncePropChanged(ironImg, 'loaded').then(() => {
-      const original = ironImg.src;
+    setup(() => {
+      element = fixture('smartFixture');
+    });
 
-      element.smart = true;
+    test('Should update size if smart is applied', (done) => {
+      const ironImg = element.shadowRoot.querySelector('iron-image');
 
-      expect(original).to.not.equal(ironImg.src);
+      oncePropChanged(ironImg, 'loaded').then(() => {
+        const original = ironImg.src;
 
-      done();
-    })
-      .catch(done);
+        element.smart = true;
+
+        expect(original).to.not.equal(ironImg.src);
+
+        done();
+      })
+        .catch(done);
+    });
   });
-});
 </script>
 
 </body>

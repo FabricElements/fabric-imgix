@@ -4,10 +4,10 @@
 
 ## Installation
 
-Install fabric-imgix with Bower
+Install fabric-imgix with npm
 
 ```shell
-$ bower install --save FabricElements/fabric-imgix
+$ npm install FabricElements/fabric-imgix --save
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ $ bower install --save FabricElements/fabric-imgix
 Import it into the `<head>` of your page
 
 ```html
-<link rel="import" href="bower_components/fabric-imgix/fabric-imgix.html">
+<script type="module" src="node_modules/@fabricelements/fabric-imgix/fabric-imgix.js"></script>
 ```
 
 ### Example: basic usage

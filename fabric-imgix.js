@@ -1,9 +1,10 @@
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
+/* eslint-disable max-len */
+/* eslint-disable-next-line max-len */
+import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-image/iron-image.js';
-import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
-import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
+import {IronResizableBehavior} from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
+import {afterNextRender} from '@polymer/polymer/lib/utils/render-status.js';
+import {mixinBehaviors} from '@polymer/polymer/lib/legacy/class.js';
 /* eslint-disable max-len */
 
 /**
@@ -18,6 +19,9 @@ import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 class FabricImgix extends mixinBehaviors([
   IronResizableBehavior,
 ], PolymerElement) {
+  /**
+   * @return {!HTMLTemplateElement}
+   */
   static get template() {
     return html`
     <style>
